@@ -1,8 +1,10 @@
-version: "3.9"
+version: "3.3"
 services: 
   web:
     build: .
     ports:
       - "80:80"
-  redis:
-    image: "redis:alpine"
+    volumes:
+      - pf:/opt/pf/data
+volumes: 
+  pf:

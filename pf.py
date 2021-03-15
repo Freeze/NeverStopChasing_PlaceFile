@@ -107,5 +107,7 @@ if __name__ == "__main__":
     l.start(timeout)
     resource = File('/opt/pf/data')
     factory = Site(resource)
+    print(PORT)
+    print(type(PORT))
     reactor.listenTCP(PORT, factory)
     reactor.run()
