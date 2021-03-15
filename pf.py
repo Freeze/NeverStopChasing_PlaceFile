@@ -2,7 +2,6 @@
 import requests
 import json
 import re
-import os
 from datetime import datetime
 from twisted.internet import task, reactor
 from twisted.web.static import File
@@ -14,7 +13,7 @@ from twisted.web.server import Site
 NSC_CHASERS = json.loads(open("nsc_chasers.json", "r").read())
 
 ## HTTP Port global variable
-PORT = os.getenv('NSC_PORT')
+PORT = 80
 
 
 
@@ -107,7 +106,5 @@ if __name__ == "__main__":
     l.start(timeout)
     resource = File('/opt/pf/data')
     factory = Site(resource)
-    print(PORT)
-    print(type(PORT))
     reactor.listenTCP(PORT, factory)
     reactor.run()
