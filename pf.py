@@ -2,13 +2,11 @@
 import requests
 import json
 import re
-import http.server
-import socketserver
+import os
 from datetime import datetime
 from twisted.internet import task, reactor
 from twisted.web.static import File
 from twisted.web.server import Site
-from twisted.web import server, resource
 
 ## This is a global list of all chasers that I manually compiled in json list format
 ## It should be called nsc_chasers.json in whatever directory your project is in.  
@@ -16,7 +14,9 @@ from twisted.web import server, resource
 NSC_CHASERS = json.loads(open("nsc_chasers.json", "r").read())
 
 ## HTTP Port global variable
-PORT = 8080
+PORT = os.getenv('NSC_PORT')
+
+
 
 
 def get_sn():
@@ -38,7 +38,7 @@ def init_placefile():
     """
     
     now = datetime.utcnow()
-    pf = open('/var/www/html/nsc_gr.txt', 'w')
+    pf = open('/opt/pf/data/nsc_gr.txt', 'w')
     pf.write(f'Title: Latest NSC Discord Chaser Locations (Last Updated: {now})\n')
     pf.write('Refresh: 1\n')
     pf.write('Font: 1, 11, 0, "Courier New"\n')
@@ -47,8 +47,8 @@ def init_placefile():
     pf.write('IconFile: 6, 22, 22, 11, 11, "http://hldn.me/iconfile.png"\n')
     pf.write('IconFile: 7, 22, 22, 11, 11, "http://hldn.me/iconfile.png"\n')
     pf.write('Threshold: 999\n')
-    pf.write('All data provided by SpotterNetwork')
-    pf.write('\n')
+    pf.write('All data provided by SpotterNetwork\n')
+    pf.write('All location data is only kept as long as it is kept by SpotterNetwork\n')
     return pf
 
 
@@ -105,7 +105,7 @@ if __name__ == "__main__":
     timeout = 60.0
     l = task.LoopingCall(event_loop)
     l.start(timeout)
-    resource = File('/var/www/html/')
+    resource = File('/opt/pf/data')
     factory = Site(resource)
     reactor.listenTCP(PORT, factory)
     reactor.run()
