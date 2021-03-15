@@ -2,12 +2,22 @@
 import requests
 import json
 import re
-import time
+import http.server
+import socketserver
+from datetime import datetime
+from twisted.internet import task, reactor
+from twisted.web.static import File
+from twisted.web.server import Site
+from twisted.web import server, resource
 
 ## This is a global list of all chasers that I manually compiled in json list format
 ## It should be called nsc_chasers.json in whatever directory your project is in.  
 ## I don't know why I am writing this, because I am the only one that will be hosting this probably.  
 NSC_CHASERS = json.loads(open("nsc_chasers.json", "r").read())
+
+## HTTP Port global variable
+PORT = 8080
+
 
 def get_sn():
     """
@@ -27,8 +37,9 @@ def init_placefile():
     I can use the real ones if people complain about the catt
     """
     
+    now = datetime.utcnow()
     pf = open('/var/www/html/nsc_gr.txt', 'w')
-    pf.write('Title: Latest NSC Discord Chaser Locations\n')
+    pf.write(f'Title: Latest NSC Discord Chaser Locations (Last Updated: {now})\n')
     pf.write('Refresh: 1\n')
     pf.write('Font: 1, 11, 0, "Courier New"\n')
     pf.write('IconFile: 1, 22, 22, 11, 11, "http://hldn.me/iconfile.png"\n')
@@ -36,6 +47,7 @@ def init_placefile():
     pf.write('IconFile: 6, 22, 22, 11, 11, "http://hldn.me/iconfile.png"\n')
     pf.write('IconFile: 7, 22, 22, 11, 11, "http://hldn.me/iconfile.png"\n')
     pf.write('Threshold: 999\n')
+    pf.write('All data provided by SpotterNetwork')
     pf.write('\n')
     return pf
 
@@ -73,16 +85,27 @@ def parse_sn(sn_placefile, nsc_placefile):
                     update_placefile(placefile=nsc_placefile, name_display=text_line, location=value, icon=icon_line)
 
 
+def event_loop():
+    """
+    This is the function that does all the work.  Put in its own function to make it easy to loop over.
+    1) Grab SpotterNetwork Placefile
+    2) Create a new NSC Placefile
+    3) Loop over the data in the SpotterNetwork Placefile
+    4) When we find data we need to use, add it to our placefile.
+    """
 
-
-if __name__ == "__main__":
     sn_placefile = get_sn()
     nsc_placefile = init_placefile()
     parse_sn(sn_placefile, nsc_placefile)
+    
 
+        
 
-
-
-
-
-
+if __name__ == "__main__":
+    timeout = 60.0
+    l = task.LoopingCall(event_loop)
+    l.start(timeout)
+    resource = File('/var/www/html/')
+    factory = Site(resource)
+    reactor.listenTCP(PORT, factory)
+    reactor.run()
