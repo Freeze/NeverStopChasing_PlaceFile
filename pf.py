@@ -37,7 +37,7 @@ def init_placefile():
     """
     
     now = datetime.utcnow()
-    pf = open('/opt/pf/data/nsc_gr.txt', 'w')
+    pf = open('/var/www/html/nsc_gr.txt', 'w')
     pf.write(f'Title: Latest NSC Discord Chaser Locations (Last Updated: {now})\n')
     pf.write('Refresh: 1\n')
     pf.write('Font: 1, 11, 0, "Courier New"\n')
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     timeout = 60.0
     l = task.LoopingCall(event_loop)
     l.start(timeout)
-    resource = File('/opt/pf/data')
+    resource = File('/var/www/html')
     factory = Site(resource)
     reactor.listenTCP(PORT, factory)
     reactor.run()

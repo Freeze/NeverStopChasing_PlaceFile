@@ -5,6 +5,4 @@ services:
     ports:
       - "80:80"
     volumes:
-      - pf:/opt/pf/data
-volumes: 
-  pf:
+      - /var/www/html:/var/www/html
