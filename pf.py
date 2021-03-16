@@ -46,8 +46,12 @@ def init_placefile():
     pf.write('IconFile: 6, 22, 22, 11, 11, "http://hldn.me/iconfile.png"\n')
     pf.write('IconFile: 7, 22, 22, 11, 11, "http://hldn.me/iconfile.png"\n')
     pf.write('Threshold: 999\n')
-    pf.write('All data provided by SpotterNetwork\n')
-    pf.write('All location data is only kept as long as it is kept by SpotterNetwork\n')
+    pf.write('All data provided by Spotter Network\n')
+    pf.write('Historical location information is not tracked or stored\n')
+    pf.write('Location data mirrors https://www.spotternetwork.org/feeds/gr.txt\n')
+    pf.write('With spotters that are not part of the NSC Discord filtered out\n')
+    pf.write('You should still be able to use the official Spotter Network placefile along with this\n')
+    pf.write('Questions or concerns, contact Holden Smith at h0lden.003@gmail.com\n')
     return pf
 
 
@@ -82,7 +86,7 @@ def parse_sn(sn_placefile, nsc_placefile):
                 chaser_name = match.group(2)
                 the_rest = match.group(3)
                 icon_number = icon.split(',')[4]
-                new_icon_line = f'Icon: 0,0,000,7,{icon_number},"{chaser_name}"\\n{the_rest}'
+                new_icon_line = f'Icon: 0,0,000,7,{icon_number},"{chaser_name}\\n{the_rest}'
                 if chaser_name in NSC_CHASERS:
                     print(f"{chaser_name} is a #TEAMREDMODE NSC_CHASER, adding them to custom placefile!")
                     update_placefile(placefile=nsc_placefile, name_display=text_line, location=value, icon=new_icon_line)
