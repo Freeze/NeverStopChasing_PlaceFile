@@ -63,7 +63,7 @@ def update_placefile(placefile, name_display, location, icon):
     placefile.write(f"{location}\n")
     placefile.write(f"{icon}\n")
     placefile.write(f"{name_display}\n")
-    placefile.write("End:\n")
+    placefile.write("End:\n\n")
 
     
 
