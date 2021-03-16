@@ -48,8 +48,8 @@ def init_placefile():
     pf.write('Threshold: 999\n')
     pf.write('All data provided by Spotter Network\n')
     pf.write('Historical location information is not tracked or stored\n')
-    pf.write('Location data mirrors https://www.spotternetwork.org/feeds/gr.txt\n')
-    pf.write('With spotters that are not part of the NSC Discord filtered out\n')
+    pf.write('Location data mirrors what is available from official Spoter Network feed\n')
+    pf.write('With spotters that are not part of the NSC Discord filtered out, and cat icons\n')
     pf.write('You should still be able to use the official Spotter Network placefile along with this\n')
     pf.write('Questions or concerns, contact Holden Smith at h0lden.003@gmail.com\n')
     return pf
