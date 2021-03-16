@@ -76,12 +76,16 @@ def parse_sn(sn_placefile, nsc_placefile):
         if value.startswith("Object:"):
             icon_line = sn_placefile[index + 1]
             text_line = sn_placefile[index + 2]
-            name_pattern = r'Icon:\s[0-9,]*"([A-z \(\)0-9]*)\\n'
+            name_pattern = r'(Icon:\s[0-9\,]*)"([\w\s\-\(\)\'\.]*)\\n(.*)'
             if match := re.search(name_pattern, icon_line):
-                chaser_name = match.group(1)
+                icon = match.group(1)
+                chaser_name = match.group(2)
+                the_rest = match.group(3)
+                icon_number = icon.split(',')[4]
+                new_icon_line = f'Icon: 0,0,000,7,{icon_number},"{chaser_name}"\\n{the_rest}'
                 if chaser_name in NSC_CHASERS:
                     print(f"{chaser_name} is a #TEAMREDMODE NSC_CHASER, adding them to custom placefile!")
-                    update_placefile(placefile=nsc_placefile, name_display=text_line, location=value, icon=icon_line)
+                    update_placefile(placefile=nsc_placefile, name_display=text_line, location=value, icon=new_icon_line)
 
 
 def event_loop():
