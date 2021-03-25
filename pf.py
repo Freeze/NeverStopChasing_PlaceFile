@@ -11,6 +11,7 @@ from twisted.web.server import Site
 ## It should be called nsc_chasers.json in whatever directory your project is in.  
 ## I don't know why I am writing this, because I am the only one that will be hosting this probably.  
 NSC_CHASERS = json.loads(open("nsc_chasers.json", "r").read())
+OTHER_CHASERS = json.loads(open("other_chasers.json", "r").read())
 
 ## HTTP Port global variable
 PORT = 80
@@ -38,14 +39,14 @@ def init_placefile():
     
     now = datetime.utcnow()
     pf = open('/var/www/html/nsc_gr.txt', 'w')
-    pf.write(f'Title: Latest NSC Discord Chaser Locations (Last Updated: {now})\n')
     pf.write('Refresh: 1\n')
+    pf.write('Threshold: 999\n')
+    pf.write(f'Title: Latest NSC Discord Chaser Locations (Last Updated: {now})\n')
     pf.write('Font: 1, 12, 0, "Courier New"\n')
     pf.write('IconFile: 1, 22, 22, 11, 11, "http://hldn.me/iconfile.png"\n')
     pf.write('IconFile: 2, 22, 22, 11, 11, "http://hldn.me/iconfile.png"\n')
     pf.write('IconFile: 6, 22, 22, 11, 11, "http://hldn.me/iconfile.png"\n')
     pf.write('IconFile: 7, 22, 22, 11, 11, "http://hldn.me/iconfile.png"\n')
-    pf.write('Threshold: 999\n')
     pf.write('All data provided by Spotter Network\n')
     pf.write('Historical location information is not tracked or stored\n')
     pf.write('Location data mirrors what is available from official Spoter Network feed\n')
@@ -78,8 +79,12 @@ def parse_sn(sn_placefile, nsc_placefile):
     """
     for index, value in enumerate(sn_placefile):
         if value.startswith("Object:"):
-            icon_line = sn_placefile[index + 1]
-            text_line = sn_placefile[index + 2]
+            if sn_placefile[index + 2].startswith("Icon:"):
+                icon_line = sn_placefile[index + 2]
+                text_line = sn_placefile[index + 3]
+            else:
+                text_line = sn_placefile[index + 2]
+                icon_line = sn_placefile[index + 1]
             name_pattern = r'(Icon:\s[0-9\,]*)"([\w\s\-\(\)\'\.]*)\\n(.*)'
             if match := re.search(name_pattern, icon_line):
                 icon = match.group(1)
@@ -88,8 +93,17 @@ def parse_sn(sn_placefile, nsc_placefile):
                 icon_number = icon.split(',')[4]
                 new_icon_line = f'Icon: 0,0,000,7,{icon_number},"{chaser_name}\\n{the_rest}'
                 if chaser_name in NSC_CHASERS:
-                    print(f"{chaser_name} is a #TEAMREDMODE NSC_CHASER, adding them to custom placefile!")
+                    print(f"[{datetime.utcnow()}]: {chaser_name} is a #TEAMREDMODE NSC_CHASER, adding them to custom placefile!")
+                    icon_number = icon.split(',')[4]
+                    new_icon_line = f'Icon: 0,0,000,7,{icon_number},"{chaser_name}\\n{the_rest}'
                     update_placefile(placefile=nsc_placefile, name_display=text_line, location=value, icon=new_icon_line)
+                elif chaser_name in OTHER_CHASERS:
+                    icon_number = icon.split(',')[4]
+                    icon_number = str(int(icon_number) + 1)
+                    new_icon_line = f'Icon: 0,0,000,7,{icon_number},"{chaser_name}\\n{the_rest}'
+                    print(f"[{datetime.utcnow()}]: {chaser_name} is a PROMINENT, adding them to custom placefile!")
+                    update_placefile(placefile=nsc_placefile, name_display=text_line, location=value, icon=new_icon_line)
+    print("\n")
 
 
 def event_loop():
