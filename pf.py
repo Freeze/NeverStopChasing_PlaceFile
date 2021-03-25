@@ -40,7 +40,7 @@ def init_placefile():
     pf = open('/var/www/html/nsc_gr.txt', 'w')
     pf.write(f'Title: Latest NSC Discord Chaser Locations (Last Updated: {now})\n')
     pf.write('Refresh: 1\n')
-    pf.write('Font: 1, 11, 0, "Courier New"\n')
+    pf.write('Font: 1, 12, 0, "Courier New"\n')
     pf.write('IconFile: 1, 22, 22, 11, 11, "http://hldn.me/iconfile.png"\n')
     pf.write('IconFile: 2, 22, 22, 11, 11, "http://hldn.me/iconfile.png"\n')
     pf.write('IconFile: 6, 22, 22, 11, 11, "http://hldn.me/iconfile.png"\n')
