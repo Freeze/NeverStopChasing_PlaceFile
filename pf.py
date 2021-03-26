@@ -101,7 +101,7 @@ def parse_sn(sn_placefile, nsc_placefile):
                     icon_number = icon.split(',')[4]
                     icon_number = str(int(icon_number) + 1)
                     new_icon_line = f'Icon: 0,0,000,7,{icon_number},"{chaser_name}\\n{the_rest}'
-                    print(f"[{datetime.utcnow()}]: {chaser_name} is a PROMINENT, adding them to custom placefile!")
+                    print(f"[{datetime.utcnow()}]: {chaser_name} is a PROMINENT CHASER, adding them to custom placefile!")
                     update_placefile(placefile=nsc_placefile, name_display=text_line, location=value, icon=new_icon_line)
     print("\n")
 
