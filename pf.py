@@ -12,6 +12,7 @@ from twisted.web.server import Site
 ## I don't know why I am writing this, because I am the only one that will be hosting this probably.  
 NSC_CHASERS = json.loads(open("nsc_chasers.json", "r").read())
 OTHER_CHASERS = json.loads(open("other_chasers.json", "r").read())
+CLOWN_CHASERS = json.loads(open("clowns.json", "r").read())
 
 ## HTTP Port global variable
 PORT = 80
@@ -103,6 +104,13 @@ def parse_sn(sn_placefile, nsc_placefile):
                     new_icon_line = f'Icon: 0,0,000,7,{icon_number},"{chaser_name}\\n{the_rest}'
                     print(f"[{datetime.utcnow()}]: {chaser_name} is a PROMINENT CHASER, adding them to custom placefile!")
                     update_placefile(placefile=nsc_placefile, name_display=text_line, location=value, icon=new_icon_line)
+                elif chaser_name in CLOWN_CHASERS:
+                    icon_number = icon.split(',')[4]
+                    icon_number = str(int(icon_number) + 2)
+                    new_icon_line = f'Icon: 0,0,000,7,{icon_number},"{chaser_name}\\n{the_rest}'
+                    print(f"[{datetime.utcnow()}]: {chaser_name} is a RECKLESS STORM CHASER adding them to custom placefile!")
+                    update_placefile(placefile=nsc_placefile, name_display=text_line, location=value, icon=new_icon_line)
+    print("\n")
     print("\n")
 
 
