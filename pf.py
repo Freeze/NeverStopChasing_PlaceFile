@@ -26,7 +26,11 @@ def get_sn():
     This is a little bit ugly, but so is the placefile format..
     I accept pull requests.
     """
+    print("Getting new SN locations")
     r = requests.get("https://www.spotternetwork.org/feeds/gr.txt")
+    print(f"{r.status_code}: Got new SN locations in {r.elapsed.total_seconds()}")
+    if r.status_code != 200:
+        get_sn()
     return r.text.splitlines()
 
 
@@ -122,13 +126,13 @@ def event_loop():
     3) Loop over the data in the SpotterNetwork Placefile
     4) When we find data we need to use, add it to our placefile.
     """
-
     sn_placefile = get_sn()
     nsc_placefile = init_placefile()
     parse_sn(sn_placefile, nsc_placefile)
     
 
         
+nsc_placefile = init_placefile()
 
 if __name__ == "__main__":
     timeout = 60.0
